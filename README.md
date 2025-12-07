@@ -21,12 +21,17 @@ A powerful notification system for FilamentPHP that handles multi-channel notifi
 composer require usamamuneerchaudhary/filament-notifier
 ```
 
-### 2. Publish and Run Migrations
+### 2. Run the Installation Command
 
 ```bash
-php artisan vendor:publish --provider="Usamamuneerchaudhary\Notifier\NotifierServiceProvider"
-php artisan migrate
+php artisan notifier:install
 ```
+
+This command will:
+- Publish the configuration file
+- Run the necessary migrations
+- Create sample notification channels and templates
+- Set up the basic structure
 
 ### 3. Register the Plugin
 
@@ -56,9 +61,17 @@ MAIL_PORT=2525
 MAIL_USERNAME=your_username
 MAIL_PASSWORD=your_password
 MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@example.com
+MAIL_FROM_NAME="Your App"
+
+# Notifier Package Settings
+NOTIFIER_EMAIL_ENABLED=true
+NOTIFIER_SLACK_ENABLED=false
+NOTIFIER_SMS_ENABLED=false
 
 # Slack Configuration
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+SLACK_CHANNEL=#notifications
 
 # SMS Configuration (Twilio)
 TWILIO_ACCOUNT_SID=your_account_sid
@@ -71,9 +84,15 @@ TWILIO_PHONE_NUMBER=+1234567890
 ### Basic Notification Sending
 
 ```php
-use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
+use Usamamuneerchaudhary\Notifier\Facades\Notifier;
 
 // Send a notification
+Notifier::send($user, 'user.registered', [
+    'name' => $user->name,
+    'email' => $user->email,
+]);
+
+// Or using the service directly
 $notifier = app('notifier');
 $notifier->send($user, 'user.registered', [
     'name' => $user->name,
@@ -198,6 +217,19 @@ class CustomChannelDriver implements ChannelDriverInterface
 ],
 ```
 
+## Database Tables
+
+The package creates the following database tables with the `notifier_` prefix to avoid conflicts with Laravel's built-in tables:
+
+- `notifier_channels` - Stores notification channel configurations
+- `notifier_events` - Stores notification event definitions  
+- `notifier_templates` - Stores notification templates
+- `notifier_preferences` - Stores user notification preferences
+- `notifier_notifications` - Stores sent notifications
+- `notifier_settings` - Stores global notification settings
+
+**Note:** These tables are separate from Laravel's built-in `notifications` table, which is used for database notifications. Our package provides a comprehensive notification management system that works alongside Laravel's native notification system.
+
 ## API Reference
 
 ### NotifierManager
@@ -239,11 +271,31 @@ class CustomChannelDriver implements ChannelDriverInterface
 
 ## Testing
 
-Run the test suite:
+### Running Tests
 
 ```bash
 composer test
 ```
+
+### Sending Test Notifications
+
+You can send test notifications using the provided command:
+
+```bash
+# Send a test notification
+php artisan notifier:test user.registered --user=1
+
+# Send with custom data
+php artisan notifier:test user.registered --user=1 --data="name=John Doe" --data="app_name=Test App"
+
+# Send to specific channel
+php artisan notifier:test user.registered --user=1 --channel=email
+```
+
+## Available Commands
+
+- `php artisan notifier:install` - Install the package and create sample data
+- `php artisan notifier:test {event} [options]` - Send test notifications
 
 ## Contributing
 
