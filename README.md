@@ -4,12 +4,14 @@ A powerful notification system for FilamentPHP that handles multi-channel notifi
 
 ## Features
 
-- 🚀 **Multi-Channel Support**: Email, SMS, Slack, and more
+- 🚀 **Multi-Channel Support**: Email, SMS, Slack, Discord, Push, and more
 - 📝 **Template Management**: Create and manage notification templates with variable support
 - ⏰ **Scheduled Notifications**: Send notifications at specific times
 - 🎯 **Event-Driven**: Trigger notifications based on application events
-- 👥 **User Preferences**: Allow users to control their notification preferences
-- 📊 **Analytics Dashboard**: Track notification delivery and engagement
+- 👥 **User Preferences**: Allow users to control their notification preferences via REST API
+- 📊 **Analytics Dashboard**: Comprehensive dashboard with engagement metrics, charts, and insights
+- 📈 **Email Tracking**: Track email opens and link clicks with analytics
+- ⚡ **Rate Limiting**: Built-in rate limiting to prevent abuse (per minute, hour, day)
 - 🔧 **Easy Configuration**: Simple setup with comprehensive configuration options
 - 🧪 **Fully Tested**: Comprehensive test suite for reliability
 
@@ -48,6 +50,11 @@ public function panel(Panel $panel): Panel
         ]);
 }
 ```
+
+After registration, you'll have access to:
+- **Notifier Dashboard** - Comprehensive analytics and metrics
+- **Notification Settings** - Configure preferences, analytics, and rate limiting
+- **Notification Resources** - Manage channels, events, templates, and notifications
 
 ### 4. Configure Channels
 
@@ -310,6 +317,131 @@ Content-Type: application/json
 
 **Note:** The API will return a `403` error if the admin has disabled `allow_override` in the notification settings.
 
+## Analytics & Tracking
+
+The package includes comprehensive analytics tracking for email notifications, allowing you to measure engagement and optimize your notification strategy.
+
+### Email Open Tracking
+
+When `track_opens` is enabled in analytics settings, a 1x1 transparent tracking pixel is automatically injected into all email notifications. When a user opens the email, the pixel loads and tracks the open event.
+
+**Tracking Endpoint:**
+```http
+GET /notifier/track/open/{token}
+```
+
+This endpoint:
+- Returns a 1x1 transparent PNG pixel
+- Records the first open time in `opened_at`
+- Increments the `opens_count` counter
+- Respects analytics enabled/disabled settings
+
+### Link Click Tracking
+
+When `track_clicks` is enabled, all URLs in email content are automatically rewritten to use tracking URLs. When users click links, the system tracks the click and redirects to the original URL.
+
+**Tracking Endpoint:**
+```http
+GET /notifier/track/click/{token}?url={encoded_url}
+```
+
+This endpoint:
+- Records the first click time in `clicked_at`
+- Increments the `clicks_count` counter
+- Safely redirects to the original URL
+- Validates URLs to prevent open redirect vulnerabilities
+
+### Analytics Dashboard
+
+Access the comprehensive analytics dashboard in your Filament admin panel:
+
+**Location:** Navigate to **Notifier → Dashboard** in your Filament admin panel.
+
+**Dashboard Features:**
+
+1. **Overview Stats Widget** (Header)
+   - Total notifications with trend chart
+   - Success rate percentage
+   - Pending notifications count
+   - Failed notifications count
+   - Active channels count
+
+2. **Engagement Stats Widget**
+   - Total opens (with 7-day trend chart)
+   - Open rate percentage
+   - Total clicks (with 7-day trend chart)
+   - Click rate percentage
+   - Click-through rate (CTR)
+
+3. **Time Series Chart**
+   - 30-day line chart showing sent, opened, and clicked notifications
+   - Full-width visualization
+   - Auto-refreshes every 30 seconds
+
+4. **Engagement Analytics Chart**
+   - Combined bar and line chart
+   - Shows opens and clicks (bars)
+   - Overlays open rate % and click rate % (lines)
+   - Dual Y-axis for counts and percentages
+   - Last 7 days view
+
+5. **Channel Performance Chart**
+   - Bar chart comparing all active channels
+   - Shows sent, opened, and clicked per channel
+   - Helps identify best-performing channels
+
+6. **Rate Limiting Status Widget**
+   - Real-time usage for minute, hour, and day limits
+   - Color-coded warnings (red >90%, yellow >75%)
+   - Percentage usage indicators
+   - Auto-refreshes every 10 seconds
+
+All widgets respect the analytics and rate limiting enabled/disabled settings.
+
+### Data Retention
+
+Configure data retention in the analytics settings. Use the cleanup command to remove old analytics data:
+
+```bash
+# Clean up analytics data older than retention period
+php artisan notifier:cleanup-analytics
+
+# Dry run to see what would be cleaned
+php artisan notifier:cleanup-analytics --dry-run
+```
+
+The cleanup command:
+- Respects the `retention_days` setting
+- Anonymizes analytics data (preserves notification records)
+- Can be scheduled via Laravel's task scheduler
+
+## Rate Limiting
+
+The package includes built-in rate limiting to prevent notification abuse and ensure system stability.
+
+### Configuration
+
+Configure rate limits in the Filament admin panel under **Notifier → Settings → Rate Limiting**:
+
+- **Max Per Minute**: Maximum notifications allowed per minute (default: 60)
+- **Max Per Hour**: Maximum notifications allowed per hour (default: 1000)
+- **Max Per Day**: Maximum notifications allowed per day (default: 10000)
+
+### How It Works
+
+Rate limiting is enforced before notification creation:
+- All three limits (minute, hour, day) are checked
+- If any limit is exceeded, notification creation is blocked
+- Rate limit violations are logged for monitoring
+- Counters are tracked using Laravel Cache with appropriate TTL
+
+### Monitoring
+
+View real-time rate limiting status in the **Notifier Dashboard**:
+- Current usage vs limits for each time period
+- Color-coded warnings (red >90%, yellow >75%, green otherwise)
+- Percentage usage indicators
+
 ## Configuration
 
 ### Channel Configuration
@@ -406,6 +538,10 @@ The package creates the following database tables with the `notifier_` prefix to
 - `status`: Notification status (pending, sent, failed)
 - `scheduled_at`: Scheduled send time
 - `sent_at`: Actual send time
+- `opened_at`: First time notification was opened (analytics)
+- `clicked_at`: First time a link was clicked (analytics)
+- `opens_count`: Total number of opens (analytics)
+- `clicks_count`: Total number of clicks (analytics)
 
 ## Testing
 
@@ -414,6 +550,26 @@ The package creates the following database tables with the `notifier_` prefix to
 ```bash
 composer test
 ```
+
+The package includes comprehensive tests covering:
+- Notification sending and scheduling
+- User preferences and API endpoints
+- Analytics tracking (opens, clicks)
+- Rate limiting enforcement
+- Email driver functionality
+- Analytics cleanup command
+
+### Test Coverage
+
+**Feature Tests:**
+- `NotifierManagerTest` - Core notification functionality
+- `AnalyticsTrackingTest` - Email open and click tracking
+- `RateLimitingTest` - Rate limit enforcement
+- `AnalyticsCleanupCommandTest` - Data retention cleanup
+
+**Unit Tests:**
+- `RateLimitingServiceTest` - Rate limiting service logic
+- `EmailDriverTest` - Email sending and tracking pixel injection
 
 ### Sending Test Notifications
 
@@ -434,6 +590,38 @@ php artisan notifier:test user.registered --user=1 --channel=email
 
 - `php artisan notifier:install` - Install the package and create sample data
 - `php artisan notifier:test {event} [options]` - Send test notifications
+- `php artisan notifier:cleanup-analytics [--dry-run]` - Clean up old analytics data based on retention settings
+
+### Cleanup Analytics Command
+
+The cleanup command removes or anonymizes analytics data older than the configured retention period:
+
+```bash
+# Clean up old analytics data
+php artisan notifier:cleanup-analytics
+
+# Preview what would be cleaned (dry run)
+php artisan notifier:cleanup-analytics --dry-run
+```
+
+**Options:**
+- `--dry-run`: Show what would be cleaned without actually deleting data
+
+**What it does:**
+- Finds notifications with analytics data older than `retention_days`
+- Anonymizes the data (sets opens/clicks to 0, clears timestamps)
+- Preserves notification records for historical reference
+- Respects the `analytics.enabled` setting
+
+**Scheduling:**
+Add to your `app/Console/Kernel.php` to run automatically:
+
+```php
+protected function schedule(Schedule $schedule)
+{
+    $schedule->command('notifier:cleanup-analytics')->daily();
+}
+```
 
 ## Contributing
 
