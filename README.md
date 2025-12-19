@@ -2,6 +2,10 @@
 
 A powerful notification system for FilamentPHP that handles multi-channel notifications with template management, scheduling, and real-time delivery. Built for developers who need enterprise-grade notifications without the complexity.
 
+<div align="center">
+  <img src="images/filament notifier.gif" alt="Filament Notifier Banner" width="100%">
+</div>
+
 ## Features
 
 - 🚀 **Multi-Channel Support**: Email, SMS, Slack, Discord, Push, and more
@@ -93,7 +97,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 ```php
 use Usamamuneerchaudhary\Notifier\Facades\Notifier;
 
-// Send a notification
+// Send a notification using the facade
 Notifier::send($user, 'user.registered', [
     'name' => $user->name,
     'email' => $user->email,
@@ -105,6 +109,59 @@ $notifier->send($user, 'user.registered', [
     'name' => $user->name,
     'email' => $user->email,
 ]);
+```
+
+### Using Service Facades
+
+The package provides convenient facades for accessing services:
+
+```php
+use Usamamuneerchaudhary\Notifier\Facades\Preference;
+use Usamamuneerchaudhary\Notifier\Facades\Analytics;
+use Usamamuneerchaudhary\Notifier\Facades\UrlTracking;
+use Usamamuneerchaudhary\Notifier\Facades\NotificationRepo;
+
+// Get user preferences
+$preferences = Preference::getUserPreferences($user, 'user.registered');
+
+// Check analytics status
+if (Analytics::isEnabled()) {
+    Analytics::trackOpen($notification);
+}
+
+// Safely redirect URLs
+return UrlTracking::safeRedirect('https://example.com');
+
+// Find notification by token
+$notification = NotificationRepo::findByToken($token);
+```
+
+**Note:** After installing the package, run `composer dump-autoload` to register the facades.
+
+### Dependency Injection (Recommended)
+
+For better testability, use dependency injection in your controllers and services:
+
+```php
+use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
+
+class MyController extends Controller
+{
+    public function __construct(
+        protected PreferenceService $preferenceService,
+        protected AnalyticsService $analyticsService
+    ) {}
+
+    public function index()
+    {
+        $preferences = $this->preferenceService->getUserPreferences($user, 'event.key');
+        
+        if ($this->analyticsService->isEnabled()) {
+            // Do something
+        }
+    }
+}
 ```
 
 ### Scheduled Notifications
@@ -359,7 +416,7 @@ Access the comprehensive analytics dashboard in your Filament admin panel:
 
 **Dashboard Features:**
 
-1. **Overview Stats Widget** (Header)
+1. **Overview Stats Widget**
    - Total notifications with trend chart
    - Success rate percentage
    - Pending notifications count
@@ -367,11 +424,11 @@ Access the comprehensive analytics dashboard in your Filament admin panel:
    - Active channels count
 
 2. **Engagement Stats Widget**
-   - Total opens (with 7-day trend chart)
+   - Total opens
    - Open rate percentage
-   - Total clicks (with 7-day trend chart)
+   - Total clicks
    - Click rate percentage
-   - Click-through rate (CTR)
+   - Click-through rate
 
 3. **Time Series Chart**
    - 30-day line chart showing sent, opened, and clicked notifications
@@ -380,8 +437,8 @@ Access the comprehensive analytics dashboard in your Filament admin panel:
 
 4. **Engagement Analytics Chart**
    - Combined bar and line chart
-   - Shows opens and clicks (bars)
-   - Overlays open rate % and click rate % (lines)
+   - Shows opens and clicks
+   - Overlays open rate % and click rate %
    - Dual Y-axis for counts and percentages
    - Last 7 days view
 
@@ -392,7 +449,7 @@ Access the comprehensive analytics dashboard in your Filament admin panel:
 
 6. **Rate Limiting Status Widget**
    - Real-time usage for minute, hour, and day limits
-   - Color-coded warnings (red >90%, yellow >75%)
+   - Color-coded warnings
    - Percentage usage indicators
    - Auto-refreshes every 10 seconds
 
@@ -412,7 +469,7 @@ php artisan notifier:cleanup-analytics --dry-run
 
 The cleanup command:
 - Respects the `retention_days` setting
-- Anonymizes analytics data (preserves notification records)
+- Anonymizes analytics data
 - Can be scheduled via Laravel's task scheduler
 
 ## Rate Limiting
@@ -508,9 +565,54 @@ The package creates the following database tables with the `notifier_` prefix to
 
 - `send($user, string $eventKey, array $data = [])`: Send a notification
 - `sendNow($user, string $eventKey, array $data = [])`: Send immediately without queuing
+- `sendToChannel($user, string $eventKey, string $channelType, array $data = [])`: Send to a specific channel
 - `schedule($user, string $eventKey, Carbon $scheduledAt, array $data = [])`: Schedule a notification
 - `registerChannel(string $type, $handler)`: Register a custom channel driver
 - `registerEvent(string $key, array $config)`: Register an event configuration
+- `getRegisteredChannels()`: Get all registered channel types
+- `getRegisteredEvents()`: Get all registered event keys
+
+### Available Facades
+
+#### Preference Facade
+
+```php
+use Usamamuneerchaudhary\Notifier\Facades\Preference;
+
+Preference::getUserPreferences($user, string $eventKey): array
+Preference::getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
+Preference::shouldSendToChannel($user, string $channelType, array $preferences): bool
+```
+
+#### Analytics Facade
+
+```php
+use Usamamuneerchaudhary\Notifier\Facades\Analytics;
+
+Analytics::isEnabled(): bool
+Analytics::isOpenTrackingEnabled(): bool
+Analytics::isClickTrackingEnabled(): bool
+Analytics::generateTrackingPixel(string $trackingToken): string
+Analytics::trackOpen(Notification $notification): void
+Analytics::trackClick(Notification $notification): void
+```
+
+#### UrlTracking Facade
+
+```php
+use Usamamuneerchaudhary\Notifier\Facades\UrlTracking;
+
+UrlTracking::safeRedirect(string $url): RedirectResponse
+UrlTracking::rewriteUrlsForTracking(string $content, string $token): string
+```
+
+#### NotificationRepo Facade
+
+```php
+use Usamamuneerchaudhary\Notifier\Facades\NotificationRepo;
+
+NotificationRepo::findByToken(string $token): ?Notification
+```
 
 ### Models
 
@@ -613,16 +715,6 @@ php artisan notifier:cleanup-analytics --dry-run
 - Preserves notification records for historical reference
 - Respects the `analytics.enabled` setting
 
-**Scheduling:**
-Add to your `app/Console/Kernel.php` to run automatically:
-
-```php
-protected function schedule(Schedule $schedule)
-{
-    $schedule->command('notifier:cleanup-analytics')->daily();
-}
-```
-
 ## Contributing
 
 1. Fork the repository
@@ -635,6 +727,15 @@ protected function schedule(Schedule $schedule)
 
 This package is open-sourced software licensed under the [MIT license](LICENSE.md).
 
+## Architecture & Design
+
+The package follows Laravel best practices with a clean, service-oriented architecture:
+
+- **Service Classes**: Regular classes that can be dependency injected or accessed via facades
+- **Facades**: Convenient static access to services (registered in `composer.json`)
+- **Dependency Injection**: Preferred approach for controllers and testable code
+- **Service Container**: All services are registered as singletons for optimal performance
+
 ## Support
 
-For support, please open an issue on GitHub or contact us at hello@usamamuneer.me.
+For support, please open an issue on GitHub or contact me at hello@usamamuneer.me.
