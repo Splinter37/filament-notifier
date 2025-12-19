@@ -9,11 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
-use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\EmailDriver;
-use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\SlackDriver;
-use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\SmsDriver;
-use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\PushDriver;
-use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\DiscordDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDriverFactory;
 
 class SendNotificationJob implements ShouldQueue
 {
@@ -40,7 +36,8 @@ class SendNotificationJob implements ShouldQueue
         }
 
         try {
-            $driver = $this->getDriver($notification->channel);
+            $driverFactory = new ChannelDriverFactory();
+            $driver = $driverFactory->create($notification->channel);
 
             if (!$driver) {
                 $this->markAsFailed($notification, "No driver found for channel: {$notification->channel}");
@@ -60,17 +57,6 @@ class SendNotificationJob implements ShouldQueue
         }
     }
 
-    protected function getDriver(string $channelType)
-    {
-        return match ($channelType) {
-            'email' => new EmailDriver(),
-            'slack' => new SlackDriver(),
-            'sms' => new SmsDriver(),
-            'push' => new PushDriver(),
-            'discord' => new DiscordDriver(),
-            default => null,
-        };
-    }
 
     protected function markAsSent(Notification $notification): void
     {
