@@ -5,40 +5,36 @@ namespace Usamamuneerchaudhary\Notifier\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Usamamuneerchaudhary\Notifier\Models\Notification;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
+use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
+use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
 
 class NotificationTrackingController extends Controller
 {
+    public function __construct(
+        protected AnalyticsService $analyticsService,
+        protected NotificationRepository $notificationRepository,
+        protected UrlTrackingService $urlTrackingService
+    ) {}
+
     /**
      * Track email open - returns 1x1 transparent pixel
      */
     public function trackOpen(string $token): Response
     {
         try {
-            $notification = $this->getNotificationByToken($token);
+            $notification = $this->notificationRepository->findByToken($token);
 
             if (!$notification) {
                 return $this->transparentPixel();
             }
 
-            $analytics = NotificationSetting::getAnalytics();
-
-            if (!($analytics['enabled'] ?? config('notifier.settings.analytics.enabled', true))) {
+            if (!$this->analyticsService->isOpenTrackingEnabled()) {
                 return $this->transparentPixel();
             }
 
-            if (!($analytics['track_opens'] ?? config('notifier.settings.analytics.track_opens', true))) {
-                return $this->transparentPixel();
-            }
-
-            $notification->increment('opens_count');
-
-            if (!$notification->opened_at) {
-                $notification->update(['opened_at' => now()]);
-            }
+            $this->analyticsService->trackOpen($notification);
 
         } catch (\Exception $e) {
             Log::error("Failed to track notification open: " . $e->getMessage(), [
@@ -55,20 +51,14 @@ class NotificationTrackingController extends Controller
     public function trackClick(string $token, Request $request)
     {
         try {
-            $notification = $this->getNotificationByToken($token);
+            $notification = $this->notificationRepository->findByToken($token);
 
             if (!$notification) {
                 return redirect()->to($request->get('url', '/'));
             }
 
-            $analytics = NotificationSetting::getAnalytics();
-
-            if (!($analytics['enabled'] ?? config('notifier.settings.analytics.enabled', true))) {
-                return $this->redirectToUrl($request->get('url', '/'));
-            }
-
-            if (!($analytics['track_clicks'] ?? config('notifier.settings.analytics.track_clicks', true))) {
-                return $this->redirectToUrl($request->get('url', '/'));
+            if (!$this->analyticsService->isClickTrackingEnabled()) {
+                return $this->urlTrackingService->safeRedirect($request->get('url', '/'));
             }
 
             $originalUrl = $request->get('url', '/');
@@ -77,13 +67,9 @@ class NotificationTrackingController extends Controller
                 return redirect()->to('/');
             }
 
-            $notification->increment('clicks_count');
+            $this->analyticsService->trackClick($notification);
 
-            if (!$notification->clicked_at) {
-                $notification->update(['clicked_at' => now()]);
-            }
-
-            return $this->redirectToUrl($originalUrl);
+            return $this->urlTrackingService->safeRedirect($originalUrl);
 
         } catch (\Exception $e) {
             Log::error("Failed to track notification click: " . $e->getMessage(), [
@@ -91,31 +77,8 @@ class NotificationTrackingController extends Controller
                 'url' => $request->get('url'),
             ]);
 
-            return redirect()->to($request->get('url', '/'));
+            return $this->urlTrackingService->safeRedirect($request->get('url', '/'));
         }
-    }
-
-    /**
-     * Get notification by token from cache or database
-     */
-    protected function getNotificationByToken(string $token): ?Notification
-    {
-
-        $notificationId = Cache::get("notifier:tracking_token:{$token}");
-
-        if ($notificationId) {
-            return Notification::find($notificationId);
-        }
-
-        $notifications = Notification::whereJsonContains('data->tracking_token', $token)->get();
-
-        if ($notifications->count() > 0) {
-            $notification = $notifications->first();
-            Cache::put("notifier:tracking_token:{$token}", $notification->id, now()->addDays(30));
-            return $notification;
-        }
-
-        return null;
     }
 
     /**
@@ -130,36 +93,6 @@ class NotificationTrackingController extends Controller
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
-    }
-
-    /**
-     * Safely redirect to URL
-     */
-    protected function redirectToUrl(string $url)
-    {
-        $dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:', 'about:'];
-        $urlLower = strtolower(trim($url));
-        foreach ($dangerousProtocols as $protocol) {
-            if (str_starts_with($urlLower, $protocol)) {
-                return redirect()->to('/');
-            }
-        }
-
-        // Validate URL to prevent open redirect vulnerabilities
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            if (!str_starts_with($url, '/')) {
-                $url = '/' . $url;
-            }
-            return redirect()->to($url);
-        }
-
-        // Only allow http/https protocols
-        $parsedUrl = parse_url($url);
-        if (isset($parsedUrl['scheme']) && !in_array(strtolower($parsedUrl['scheme']), ['http', 'https'])) {
-            return redirect()->to('/');
-        }
-
-        return redirect()->away($url);
     }
 }
 

@@ -14,6 +14,10 @@ use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
 class NotificationPreferenceController extends Controller
 {
+    public function __construct(
+        protected PreferenceService $preferenceService
+    ) {}
+
     /**
      * Get all notification preferences for the authenticated user
      */
@@ -28,7 +32,7 @@ class NotificationPreferenceController extends Controller
                 ->where('notification_event_id', $event->id)
                 ->first();
 
-            $channels = PreferenceService::getChannelsForEvent($event, $preference);
+            $channels = $this->preferenceService->getChannelsForEvent($event, $preference);
 
             $preferences[] = [
                 'event_key' => $event->key,
@@ -94,7 +98,7 @@ class NotificationPreferenceController extends Controller
             ->first();
 
 
-        $channels = PreferenceService::getChannelsForEvent($event, $preference);
+        $channels = $this->preferenceService->getChannelsForEvent($event, $preference);
 
         return response()->json([
             'data' => [
