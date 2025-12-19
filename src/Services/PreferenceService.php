@@ -2,26 +2,17 @@
 
 namespace Usamamuneerchaudhary\Notifier\Services;
 
-use Illuminate\Support\Facades\Facade;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 
-class PreferenceService extends Facade
+class PreferenceService
 {
-
-    /**
-     * facade accessor
-     */
-    protected static function getFacadeAccessor(): string
-    {
-        return PreferenceService::class;
-    }
     /**
      * Get user preferences for a specific event
      */
-    public static function getUserPreferences($user, string $eventKey): array
+    public function getUserPreferences($user, string $eventKey): array
     {
         $event = NotificationEvent::where('key', $eventKey)->first();
 
@@ -37,18 +28,18 @@ class PreferenceService extends Facade
             return $preference->channels;
         }
 
-        return self::getDefaultPreferences($event);
+        return $this->getDefaultPreferences($event);
     }
 
     /**
-     * Get channels configuration for an event ,includes all active channels
+     * Get channels configuration for an event (includes all active channels)
      */
-    public static function getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
+    public function getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
     {
         if ($preference && isset($preference->channels)) {
             $channels = $preference->channels;
         } else {
-            $channels = self::getDefaultPreferences($event);
+            $channels = $this->getDefaultPreferences($event);
         }
 
         $activeChannels = NotificationChannel::where('is_active', true)
@@ -67,7 +58,7 @@ class PreferenceService extends Facade
     /**
      * Get default preferences for an event based on settings
      */
-    protected static function getDefaultPreferences(NotificationEvent $event): array
+    protected function getDefaultPreferences(NotificationEvent $event): array
     {
         $defaultChannels = NotificationSetting::get(
             'preferences.default_channels',
@@ -91,7 +82,7 @@ class PreferenceService extends Facade
     /**
      * Check if notification should be sent to a specific channel
      */
-    public static function shouldSendToChannel(string $channelType, array $preferences): bool
+    public function shouldSendToChannel($user, string $channelType, array $preferences): bool
     {
         $channel = NotificationChannel::where('type', $channelType)
             ->where('is_active', true)
@@ -108,5 +99,3 @@ class PreferenceService extends Facade
         return true;
     }
 }
-
-

@@ -23,9 +23,9 @@ class RateLimitingService
         $maxPerHour = $rateLimiting['max_per_hour'] ?? config('notifier.settings.rate_limiting.max_per_hour', 1000);
         $maxPerDay = $rateLimiting['max_per_day'] ?? config('notifier.settings.rate_limiting.max_per_day', 10000);
 
-        return $this->checkMinuteLimit($maxPerMinute)
-            && $this->checkHourLimit($maxPerHour)
-            && $this->checkDayLimit($maxPerDay);
+        return $this->checkLimit('minute', $maxPerMinute)
+            && $this->checkLimit('hour', $maxPerHour)
+            && $this->checkLimit('day', $maxPerDay);
     }
 
     /**
@@ -58,55 +58,18 @@ class RateLimitingService
     }
 
     /**
-     * Check minute limit
+     * Check if limit is exceeded for a given period
      */
-    protected function checkMinuteLimit(int $maxPerMinute): bool
+    protected function checkLimit(string $period, int $maxLimit): bool
     {
-        $key = $this->getCacheKey('minute');
+        $key = $this->getCacheKey($period);
         $count = Cache::get($key, 0);
 
-        if ($count >= $maxPerMinute) {
-            Log::warning("Rate limit exceeded: minute limit ({$maxPerMinute})", [
+        if ($count >= $maxLimit) {
+            Log::warning("Rate limit exceeded: {$period} limit ({$maxLimit})", [
                 'current_count' => $count,
-                'limit' => $maxPerMinute,
-            ]);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check hour limit
-     */
-    protected function checkHourLimit(int $maxPerHour): bool
-    {
-        $key = $this->getCacheKey('hour');
-        $count = Cache::get($key, 0);
-
-        if ($count >= $maxPerHour) {
-            Log::warning("Rate limit exceeded: hour limit ({$maxPerHour})", [
-                'current_count' => $count,
-                'limit' => $maxPerHour,
-            ]);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check day limit
-     */
-    protected function checkDayLimit(int $maxPerDay): bool
-    {
-        $key = $this->getCacheKey('day');
-        $count = Cache::get($key, 0);
-
-        if ($count >= $maxPerDay) {
-            Log::warning("Rate limit exceeded: day limit ({$maxPerDay})", [
-                'current_count' => $count,
-                'limit' => $maxPerDay,
+                'limit' => $maxLimit,
+                'period' => $period,
             ]);
             return false;
         }
