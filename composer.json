@@ -24,7 +24,7 @@
         }
     },
     "require": {
-        "php": "^8.3",
+        "php": "^8.2",
         "spatie/laravel-package-tools": "^1.19",
         "filament/filament": "^4.0",
         "symfony/mailer": "^7.2",
