@@ -1,8 +1,8 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Services\ChannelDrivers;
+namespace Umun\Notifier\Services\ChannelDrivers;
 
-use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Umun\Notifier\Models\Notification;
 
 interface ChannelDriverInterface
 {

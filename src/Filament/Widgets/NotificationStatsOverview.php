@@ -1,11 +1,11 @@
 <?php
-namespace Usamamuneerchaudhary\Notifier\Filament\Widgets;
+namespace Umun\Notifier\Filament\Widgets;
 
 use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Usamamuneerchaudhary\Notifier\Models\Notification;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\Notification;
+use Umun\Notifier\Models\NotificationChannel;
 
 class NotificationStatsOverview extends BaseWidget
 {

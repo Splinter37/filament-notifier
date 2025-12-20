@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Schemas;
+namespace Umun\Notifier\Filament\Resources\NotificationChannelResource\Schemas;
 
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;

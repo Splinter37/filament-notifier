@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Schemas;
+namespace Umun\Notifier\Filament\Resources\NotificationResource\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\KeyValue;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Services;
+namespace Umun\Notifier\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Models\NotificationSetting;
 
 class RateLimitingService
 {

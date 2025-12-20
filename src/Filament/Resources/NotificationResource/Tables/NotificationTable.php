@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Tables;
+namespace Umun\Notifier\Filament\Resources\NotificationResource\Tables;
 
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -93,7 +93,7 @@ class NotificationTable
                     ->action(function ($record) {
                         // Resend the notification
                         $record->update(['status' => 'pending']);
-                        \Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob::dispatch($record->id);
+                        \Umun\Notifier\Jobs\SendNotificationJob::dispatch($record->id);
                     }),
             ])
             ->toolbarActions([

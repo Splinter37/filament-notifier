@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Pages;
+namespace Umun\Notifier\Filament\Resources\NotificationResource\Pages;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
@@ -10,10 +10,10 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
+use Umun\Notifier\Filament\Resources\NotificationResource;
+use Umun\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Services\NotifierManager;
 use Illuminate\Support\Facades\Log;
 
 class ListNotifications extends ListRecords

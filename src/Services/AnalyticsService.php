@@ -1,9 +1,9 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Services;
+namespace Umun\Notifier\Services;
 
-use Usamamuneerchaudhary\Notifier\Models\Notification;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Models\Notification;
+use Umun\Notifier\Models\NotificationSetting;
 
 class AnalyticsService
 {

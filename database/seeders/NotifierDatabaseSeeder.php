@@ -1,10 +1,10 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Database\Seeders;
+namespace Umun\Notifier\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\NotificationEvent;
 
 class NotifierDatabaseSeeder extends Seeder
 {

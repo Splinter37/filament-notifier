@@ -1,12 +1,12 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Services;
+namespace Umun\Notifier\Services;
 
 use Illuminate\Support\Facades\Log;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
-use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
-use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
-use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
+use Umun\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Models\NotificationTemplate;
+use Umun\Notifier\Services\AnalyticsService;
+use Umun\Notifier\Services\UrlTrackingService;
 
 class TemplateRenderingService
 {

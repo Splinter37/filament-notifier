@@ -1,11 +1,11 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Tests\Unit\Services;
+namespace Umun\Notifier\Tests\Unit\Services;
 
 use Illuminate\Support\Facades\Cache;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
-use Usamamuneerchaudhary\Notifier\Services\RateLimitingService;
-use Usamamuneerchaudhary\Notifier\Tests\TestCase;
+use Umun\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Services\RateLimitingService;
+use Umun\Notifier\Tests\TestCase;
 
 class RateLimitingServiceTest extends TestCase
 {

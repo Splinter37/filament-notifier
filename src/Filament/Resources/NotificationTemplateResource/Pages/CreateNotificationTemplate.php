@@ -1,8 +1,8 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource\Pages;
+namespace Umun\Notifier\Filament\Resources\NotificationTemplateResource\Pages;
 
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource;
+use Umun\Notifier\Filament\Resources\NotificationTemplateResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateNotificationTemplate extends CreateRecord

@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Pages;
+namespace Umun\Notifier\Filament\Pages;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,9 +13,9 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationStatsOverview;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Filament\Widgets\NotificationStatsOverview;
+use Umun\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Models\NotificationChannel;
 
 class NotificationSettings extends Page
 {

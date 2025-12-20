@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Pages;
+namespace Umun\Notifier\Filament\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
@@ -11,10 +11,10 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\Auth;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
-use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationPreference;
+use Umun\Notifier\Models\NotificationSetting;
 
 class NotificationPreferences extends Page implements HasForms
 {

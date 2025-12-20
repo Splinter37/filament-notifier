@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Pages;
+namespace Umun\Notifier\Filament\Pages;
 
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
@@ -10,8 +10,8 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\NotificationEvent;
 
 class EventChannelConfiguration extends Page implements HasForms
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Commands;
+namespace Umun\Notifier\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -16,7 +16,7 @@ class NotifierInstallCommand extends Command
 
         // Publish config file
         $this->call('vendor:publish', [
-            '--provider' => 'Usamamuneerchaudhary\Notifier\NotifierServiceProvider',
+            '--provider' => 'Umun\Notifier\NotifierServiceProvider',
             '--force' => $this->option('force'),
         ]);
 
@@ -61,7 +61,7 @@ class NotifierInstallCommand extends Command
         ];
 
         foreach ($channels as $channelData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::firstOrCreate(
+            \Umun\Notifier\Models\NotificationChannel::firstOrCreate(
                 ['type' => $channelData['type']],
                 $channelData
             );
@@ -86,7 +86,7 @@ class NotifierInstallCommand extends Command
         ];
 
         foreach ($events as $eventData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationEvent::firstOrCreate(
+            \Umun\Notifier\Models\NotificationEvent::firstOrCreate(
                 ['key' => $eventData['key']],
                 $eventData
             );
@@ -118,7 +118,7 @@ class NotifierInstallCommand extends Command
         ];
 
         foreach ($templates as $templateData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationTemplate::firstOrCreate(
+            \Umun\Notifier\Models\NotificationTemplate::firstOrCreate(
                 ['name' => $templateData['name'], 'event_key' => $templateData['event_key']],
                 $templateData
             );

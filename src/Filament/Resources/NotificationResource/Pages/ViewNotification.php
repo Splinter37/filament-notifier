@@ -1,9 +1,9 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Pages;
+namespace Umun\Notifier\Filament\Resources\NotificationResource\Pages;
 
 use Filament\Notifications\Notification;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
+use Umun\Notifier\Filament\Resources\NotificationResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -22,7 +22,7 @@ class ViewNotification extends ViewRecord
                 ->visible(fn () => $this->record->status === 'failed')
                 ->action(function () {
                     $this->record->update(['status' => 'pending']);
-                    \Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob::dispatch($this->record->id);
+                    \Umun\Notifier\Jobs\SendNotificationJob::dispatch($this->record->id);
 
                     Notification::make()
                         ->title('Notification queued for resending')

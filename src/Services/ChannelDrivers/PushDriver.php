@@ -1,16 +1,16 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Services\ChannelDrivers;
+namespace Umun\Notifier\Services\ChannelDrivers;
 
 use Illuminate\Support\Facades\Http;
-use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Umun\Notifier\Models\Notification;
 
 class PushDriver implements ChannelDriverInterface
 {
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'push')->first();
+            $channel = \Umun\Notifier\Models\NotificationChannel::where('type', 'push')->first();
 
             if (!$channel || !isset($channel->settings['firebase_server_key'])) {
                 return false;

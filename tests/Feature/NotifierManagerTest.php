@@ -1,15 +1,15 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Tests\Feature;
+namespace Umun\Notifier\Tests\Feature;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
-use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
-use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
-use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
-use Usamamuneerchaudhary\Notifier\Tests\TestCase;
+use Umun\Notifier\Jobs\SendNotificationJob;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationTemplate;
+use Umun\Notifier\Services\NotifierManager;
+use Umun\Notifier\Tests\TestCase;
 
 class NotifierManagerTest extends TestCase
 {
@@ -134,7 +134,7 @@ class NotifierManagerTest extends TestCase
             'app_name' => 'Test App',
         ]);
 
-        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        $notification = \Umun\Notifier\Models\Notification::first();
 
         $this->assertEquals('Welcome to Test App, John Doe!', $notification->subject);
         $this->assertStringContainsString('Hi John Doe', $notification->content);
@@ -164,7 +164,7 @@ class NotifierManagerTest extends TestCase
             'name' => 'John Doe',
         ]);
 
-        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        $notification = \Umun\Notifier\Models\Notification::first();
         
         $this->assertNotNull($notification->data['tracking_token']);
         $this->assertEquals(32, strlen($notification->data['tracking_token']));
@@ -174,7 +174,7 @@ class NotifierManagerTest extends TestCase
     {
         Queue::fake();
 
-        \Usamamuneerchaudhary\Notifier\Models\NotificationSetting::set('analytics', [
+        \Umun\Notifier\Models\NotificationSetting::set('analytics', [
             'enabled' => true,
             'track_clicks' => true,
         ], 'analytics');
@@ -192,7 +192,7 @@ class NotifierManagerTest extends TestCase
 
         $this->manager->send($user, 'user.registered', []);
 
-        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        $notification = \Umun\Notifier\Models\Notification::first();
         $token = $notification->data['tracking_token'];
         $appUrl = rtrim(config('app.url', ''), '/');
         
@@ -204,7 +204,7 @@ class NotifierManagerTest extends TestCase
     {
         Queue::fake();
 
-        \Usamamuneerchaudhary\Notifier\Models\NotificationSetting::set('analytics', [
+        \Umun\Notifier\Models\NotificationSetting::set('analytics', [
             'enabled' => true,
             'track_clicks' => false,
         ], 'analytics');
@@ -222,7 +222,7 @@ class NotifierManagerTest extends TestCase
 
         $this->manager->send($user, 'user.registered', []);
 
-        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        $notification = \Umun\Notifier\Models\Notification::first();
         
         $this->assertStringNotContainsString('/notifier/track/click/', $notification->content);
         $this->assertStringContainsString('https://example.com', $notification->content);

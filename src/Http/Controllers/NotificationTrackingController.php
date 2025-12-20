@@ -1,14 +1,14 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Http\Controllers;
+namespace Umun\Notifier\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
-use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
-use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
-use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
+use Umun\Notifier\Services\AnalyticsService;
+use Umun\Notifier\Services\NotificationRepository;
+use Umun\Notifier\Services\UrlTrackingService;
 
 class NotificationTrackingController extends Controller
 {

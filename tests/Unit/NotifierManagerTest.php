@@ -1,9 +1,9 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Tests\Unit;
+namespace Umun\Notifier\Tests\Unit;
 
-use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
-use Usamamuneerchaudhary\Notifier\Tests\TestCase;
+use Umun\Notifier\Services\NotifierManager;
+use Umun\Notifier\Tests\TestCase;
 
 class NotifierManagerTest extends TestCase
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Pages;
+namespace Umun\Notifier\Filament\Pages;
 
 use Filament\Pages\Page;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationAnalyticsChart;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationChannelPerformance;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationEngagementStats;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationStatsOverview;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationTimeSeriesChart;
-use Usamamuneerchaudhary\Notifier\Filament\Widgets\RateLimitingStatusWidget;
+use Umun\Notifier\Filament\Widgets\NotificationAnalyticsChart;
+use Umun\Notifier\Filament\Widgets\NotificationChannelPerformance;
+use Umun\Notifier\Filament\Widgets\NotificationEngagementStats;
+use Umun\Notifier\Filament\Widgets\NotificationStatsOverview;
+use Umun\Notifier\Filament\Widgets\NotificationTimeSeriesChart;
+use Umun\Notifier\Filament\Widgets\RateLimitingStatusWidget;
 
 class NotifierDashboard extends Page
 {

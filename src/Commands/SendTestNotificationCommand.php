@@ -1,9 +1,9 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Commands;
+namespace Umun\Notifier\Commands;
 
 use Illuminate\Console\Command;
-use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
+use Umun\Notifier\Services\NotifierManager;
 
 class SendTestNotificationCommand extends Command
 {

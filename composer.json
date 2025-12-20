@@ -1,11 +1,13 @@
 {
-    "name": "usamamuneerchaudhary/filament-notifier",
+    "name": "umun/filament-notifier",
     "description": "A powerful notification system for FilamentPHP that handles multi-channel notifications with template management, scheduling, and real-time delivery. Built for developers who need enterprise-grade notifications without the complexity.",
     "keywords": [
+        "umun",
         "usamamuneerchaudhary",
         "laravel",
         "filament",
         "notifications",
+        "notifier",
         "php",
         "filamentphp"
     ],
@@ -20,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Usamamuneerchaudhary\\Notifier\\": "src"
+            "Umun\\Notifier\\": "src"
         }
     },
     "require": {
@@ -35,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Usamamuneerchaudhary\\Notifier\\Tests\\": "tests/"
+            "Umun\\Notifier\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -44,13 +46,13 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Usamamuneerchaudhary\\Notifier\\NotifierServiceProvider"
+                "Umun\\Notifier\\NotifierServiceProvider"
             ],
             "aliases": {
-                "Preference": "Usamamuneerchaudhary\\Notifier\\Facades\\Preference",
-                "Analytics": "Usamamuneerchaudhary\\Notifier\\Facades\\Analytics",
-                "UrlTracking": "Usamamuneerchaudhary\\Notifier\\Facades\\UrlTracking",
-                "NotificationRepo": "Usamamuneerchaudhary\\Notifier\\Facades\\NotificationRepo"
+                "Preference": "Umun\\Notifier\\Facades\\Preference",
+                "Analytics": "Umun\\Notifier\\Facades\\Analytics",
+                "UrlTracking": "Umun\\Notifier\\Facades\\UrlTracking",
+                "NotificationRepo": "Umun\\Notifier\\Facades\\NotificationRepo"
             }
         }
     },

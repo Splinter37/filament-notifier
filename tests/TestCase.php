@@ -1,10 +1,10 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Tests;
+namespace Umun\Notifier\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Usamamuneerchaudhary\Notifier\NotifierServiceProvider;
+use Umun\Notifier\NotifierServiceProvider;
 
 abstract class TestCase extends Orchestra
 {

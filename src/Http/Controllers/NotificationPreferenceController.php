@@ -1,16 +1,16 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Http\Controllers;
+namespace Umun\Notifier\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Usamamuneerchaudhary\Notifier\Http\Requests\UpdatePreferenceRequest;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
-use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
-use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
-use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
+use Umun\Notifier\Http\Requests\UpdatePreferenceRequest;
+use Umun\Notifier\Models\NotificationChannel;
+use Umun\Notifier\Models\NotificationEvent;
+use Umun\Notifier\Models\NotificationPreference;
+use Umun\Notifier\Models\NotificationSetting;
+use Umun\Notifier\Services\PreferenceService;
 
 class NotificationPreferenceController extends Controller
 {

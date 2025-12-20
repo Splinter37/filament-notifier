@@ -1,14 +1,14 @@
 <?php
 
-namespace Usamamuneerchaudhary\Notifier\Filament\Resources;
+namespace Umun\Notifier\Filament\Resources;
 
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Pages\ListNotifications;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Pages\ViewNotification;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Schemas\NotificationForm;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource\Tables\NotificationTable;
-use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Umun\Notifier\Filament\Resources\NotificationResource\Pages\ListNotifications;
+use Umun\Notifier\Filament\Resources\NotificationResource\Pages\ViewNotification;
+use Umun\Notifier\Filament\Resources\NotificationResource\Schemas\NotificationForm;
+use Umun\Notifier\Filament\Resources\NotificationResource\Tables\NotificationTable;
+use Umun\Notifier\Models\Notification;
 
 class NotificationResource extends Resource
 {
